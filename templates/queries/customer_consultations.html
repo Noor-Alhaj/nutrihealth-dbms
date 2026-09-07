@@ -1,0 +1,56 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Consultations - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>🏥 Nutri Health System</h2></div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span>{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📋 Query 16: Customer Consultations/Visits</h2>
+                    <p style="color: #666;">Number of visits each customer made to the center</p>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Customer ID</th><th>Customer Name</th><th>Phone</th><th>Join Date</th><th>Total Visits</th><th>Unique Days</th><th>Last Visit</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for r in results %}
+                            <tr>
+                                <td><strong>{{ r.Customer_ID }}</strong></td>
+                                <td>{{ r.Customer_Name }}</td>
+                                <td>{{ r.Phone }}</td>
+                                <td>{{ r.Join_Date }}</td>
+                                <td><strong style="color:#667eea;">{{ r.Total_Visits }}</strong></td>
+                                <td>{{ r.Unique_Visit_Days }}</td>
+                                <td>{{ r.Last_Visit if r.Last_Visit else 'No visits' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer"><p>&copy; 2026 Nutri Health Center</p></footer>
+</body>
+</html>

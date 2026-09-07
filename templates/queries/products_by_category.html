@@ -1,0 +1,111 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products by Category - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>🏥 Nutri Health System</h2></div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span class="user-name">{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📦 Query 7: Products by Category</h2>
+                    <p style="color: #666; margin-top: 0.5rem;">All products at specific branch sorted by category</p>
+                </div>
+
+                <div class="filter-form">
+                    <form method="GET">
+                        <div class="form-row">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="branch_id">Select Branch:</label>
+                                <select name="branch_id" id="branch_id" class="form-control" required>
+                                    <option value="">-- Choose a Branch --</option>
+                                    {% for b in branches %}
+                                    <option value="{{ b.Branch_ID }}" {% if selected_branch == b.Branch_ID %}selected{% endif %}>
+                                        {{ b.Branch_Name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary">🔍 Execute Query</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                {% if branch_name %}
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <h3 style="margin: 0 0 0.5rem 0;">{{ branch_name }}</h3>
+                        <p style="margin: 0;">Total Products: {{ products|length }}</p>
+                    </div>
+
+                    {% if products %}
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Category</th>
+                                    <th>Supplier</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                <tr>
+                                    <td><strong>{{ product.Product_Name }}</strong></td>
+                                    <td><span class="badge badge-success">{{ product.Category }}</span></td>
+                                    <td>{{ product.Supplier_Name }}</td>
+                                    <td>{{ product.Quantity }}</td>
+                                    <td>₪{{ "{:,.2f}".format(product.Price) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">ℹ️ No products in stock for this branch.</div>
+                    {% endif %}
+                {% elif selected_branch %}
+                    <div class="alert alert-warning">⚠️ Branch not found.</div>
+                {% else %}
+                    <div class="alert alert-info">⬆️ Please select a branch to view products.</div>
+                {% endif %}
+
+                <div class="card" style="background: #f8f9fa; margin-top: 1.5rem;">
+                    <h3 style="color: #333; margin-bottom: 1rem;">📝 SQL Query</h3>
+                    <pre style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 5px;"><code>SELECT hp.Product_Name, hp.Category, i.Quantity, hp.Price,
+       s.Supplier_Name
+FROM Inventory i
+JOIN Health_Products hp ON i.Product_ID = hp.Product_ID
+JOIN Suppliers s ON hp.Supplier_ID = s.Supplier_ID
+WHERE i.Branch_ID = ? AND i.Quantity > 0
+ORDER BY hp.Category, hp.Product_Name;</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer"><p>&copy; 2026 Nutri Health Center. All rights reserved.</p></footer>
+</body>
+</html>

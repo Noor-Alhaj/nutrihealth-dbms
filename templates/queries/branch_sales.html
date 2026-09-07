@@ -1,0 +1,139 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Sales - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h2>🏥 Nutri Health System</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span class="user-name">{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🏪 Query 11: Branch Sales</h2>
+                    <p style="color: #666; margin-top: 0.5rem;">All sales made by a specific branch, sorted by sale date</p>
+                </div>
+
+                <!-- Filter Form -->
+                <div class="filter-form">
+                    <form method="GET" action="{{ url_for('branch_sales') }}">
+                        <div class="form-row">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="branch_id">Select Branch:</label>
+                                <select name="branch_id" id="branch_id" class="form-control" required>
+                                    <option value="">-- Choose a Branch --</option>
+                                    {% for b in branches %}
+                                    <option value="{{ b.Branch_ID }}" {% if selected_branch == b.Branch_ID %}selected{% endif %}>
+                                        {{ b.Branch_Name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary">🔍 Execute Query</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results -->
+                {% if branch_name %}
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <h3 style="margin: 0 0 0.5rem 0;">{{ branch_name }}</h3>
+                        <div style="display: flex; gap: 2rem;">
+                            <div>
+                                <strong>Total Sales:</strong> {{ sales|length }}
+                            </div>
+                            <div>
+                                <strong>Total Amount:</strong> ₪{{ "{:,.2f}".format(total_amount) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if sales %}
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sale ID</th>
+                                    <th>Date</th>
+                                    <th>Customer Name</th>
+                                    <th>Employee</th>
+                                    <th>Total Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sale in sales %}
+                                <tr>
+                                    <td><strong>#{{ sale.Sale_ID }}</strong></td>
+                                    <td>{{ sale.Sale_Date }}</td>
+                                    <td>{{ sale.Customer_Name }}</td>
+                                    <td>{{ sale.Employee_Name }}</td>
+                                    <td><strong style="color: #28a745;">₪{{ "{:,.2f}".format(sale.Total_Price) }}</strong></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot style="background: #f8f9fa; font-weight: bold;">
+                                <tr>
+                                    <td colspan="4" style="text-align: right;">Total:</td>
+                                    <td style="color: #28a745;">₪{{ "{:,.2f}".format(total_amount) }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        ℹ️ No sales found for this branch.
+                    </div>
+                    {% endif %}
+                {% elif selected_branch %}
+                    <div class="alert alert-warning">
+                        ⚠️ Branch not found.
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        ⬆️ Please select a branch to view sales.
+                    </div>
+                {% endif %}
+
+                <!-- SQL Query -->
+                <div class="card" style="background: #f8f9fa; margin-top: 1.5rem;">
+                    <h3 style="color: #333; margin-bottom: 1rem;">📝 SQL Query</h3>
+                    <pre style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 5px; overflow-x: auto;"><code>SELECT s.Sale_ID, s.Sale_Date,
+       CONCAT(c.Customer_FirstName, ' ', c.Customer_LastName) AS Customer_Name,
+       e.Employee_Name, s.Total_Price
+FROM Sales s
+JOIN Customers c ON s.Customer_ID = c.Customer_ID
+JOIN Employees e ON s.Employee_ID = e.Employee_ID
+WHERE s.Branch_ID = ?
+ORDER BY s.Sale_Date DESC, s.Sale_ID DESC;</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Nutri Health Center. All rights reserved.</p>
+    </footer>
+</body>
+</html>

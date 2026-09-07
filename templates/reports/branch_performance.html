@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Branch Performance Report - Nutri Health{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>📈 Branch Performance Report</h2>
+        <a href="{{ url_for('reports') }}" class="btn btn-secondary">Back to Reports</a>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Branch Name</th>
+                    <th>Sales Count</th>
+                    <th>Total Revenue</th>
+                    <th>Total Expenses</th>
+                    <th>Salary Costs</th>
+                    <th>Net Profit</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for branch in branches %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td><strong>{{ branch.Branch_Name }}</strong></td>
+                    <td>{{ branch.Total_Sales }}</td>
+                    <td>₪{{ "%.2f"|format(branch.Total_Revenue) }}</td>
+                    <td>₪{{ "%.2f"|format(branch.Total_Expenses) }}</td>
+                    <td>₪{{ "%.2f"|format(branch.Salary_Expenses) }}</td>
+                    <td>
+                        {% if branch.Net_Profit > 0 %}
+                            <strong style="color: #4a0707df;">
+                                ₪{{ "%.2f"|format(branch.Net_Profit) }}
+                            </strong>
+                        {% else %}
+                            <strong style="color: #dc3545;">
+                                ₪{{ "%.2f"|format(branch.Net_Profit) }}
+                            </strong>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if branch.Net_Profit > 0 %}
+                            <span class="badge badge-success">Profitable</span>
+                        {% elif branch.Net_Profit == 0 %}
+                            <span class="badge badge-warning">Break Even</span>
+                        {% else %}
+                            <span class="badge badge-danger">Loss</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot style="background: #f1f1f1; font-weight: bold;">
+                <tr>
+                    <td colspan="2">TOTAL</td>
+                    <td>{{ branches|sum(attribute='Total_Sales') }}</td>
+                    <td>₪{{ "%.2f"|format(branches|sum(attribute='Total_Revenue')) }}</td>
+                    <td>₪{{ "%.2f"|format(branches|sum(attribute='Total_Expenses')) }}</td>
+                    <td>₪{{ "%.2f"|format(branches|sum(attribute='Salary_Expenses')) }}</td>
+                    <td>₪{{ "%.2f"|format(branches|sum(attribute='Net_Profit')) }}</td>
+                    <td>-</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <div style="margin-top: 2rem; padding: 1.5rem; background: #598eb4; border-radius: 8px;">
+        <h3 style="color: #45527b; margin-bottom: 1rem;">Performance Insights</h3>
+        <ul style="list-style-position: inside; line-height: 2;">
+            <li><strong>Best Performing Branch:</strong> {{ branches[0].Branch_Name }} 
+                (₪{{ "%.2f"|format(branches[0].Net_Profit) }} profit)</li>
+            <li><strong>Total Company Revenue:</strong> 
+                ₪{{ "%.2f"|format(branches|sum(attribute='Total_Revenue')) }}</li>
+            <li><strong>Total Operating Expenses:</strong> 
+                ₪{{ "%.2f"|format(branches|sum(attribute='Total_Expenses') + branches|sum(attribute='Salary_Expenses')) }}</li>
+            <li><strong>Overall Net Profit:</strong> 
+                ₪{{ "%.2f"|format(branches|sum(attribute='Net_Profit')) }}</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

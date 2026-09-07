@@ -1,0 +1,54 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Supplier Purchases - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>🏥 Nutri Health System</h2></div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span>{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🚚 Query 14: Supplier Purchases (Last Quarter)</h2>
+                    <p style="color: #666;">All purchases from each supplier during last 3 months</p>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Supplier ID</th><th>Supplier Name</th><th>Phone</th><th>Total Purchases</th><th>Total Amount</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for r in results %}
+                            <tr>
+                                <td><strong>{{ r.Supplier_ID }}</strong></td>
+                                <td>{{ r.Supplier_Name }}</td>
+                                <td>{{ r.Phone }}</td>
+                                <td>{{ r.Total_Purchases }}</td>
+                                <td><strong style="color:#dc3545;">₪{{ "{:,.2f}".format(r.Total_Amount) }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer"><p>&copy; 2026 Nutri Health Center</p></footer>
+</body>
+</html>

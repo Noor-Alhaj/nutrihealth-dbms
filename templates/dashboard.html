@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Nutri Health{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Welcome back, {{ session.employee_name }}!</p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">🏢</div>
+        <div class="stat-content">
+            <h3>{{ stats.total_branches }}</h3>
+            <p>Total Branches</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+            <h3>{{ stats.total_employees }}</h3>
+            <p>Total Employees</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">🛍️</div>
+        <div class="stat-content">
+            <h3>{{ stats.total_customers }}</h3>
+            <p>Total Customers</p>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-content">
+            <h3>{{ stats.total_products }}</h3>
+            <p>Total Products</p>
+        </div>
+    </div>
+    
+    <div class="stat-card highlight">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+            <h3>{{ stats.today_sales_count }}</h3>
+            <p>Sales Today</p>
+        </div>
+    </div>
+    
+    <div class="stat-card highlight">
+        <div class="stat-icon">💵</div>
+        <div class="stat-content">
+            <h3>${{ "%.2f"|format(stats.today_sales_amount) }}</h3>
+            <p>Revenue Today</p>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Sales and Low Stock -->
+<div class="dashboard-grid">
+    <!-- Recent Sales -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Recent Sales</h2>
+            <a href="{{ url_for('sales') }}" class="btn btn-sm btn-primary">View All</a>
+        </div>
+        
+        {% if recent_sales %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sale ID</th>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Branch</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in recent_sales %}
+                    <tr>
+                        <td><a href="{{ url_for('sale_details', sale_id=sale.Sale_ID) }}">#{{ sale.Sale_ID }}</a></td>
+                        <td>{{ sale.Sale_Date }}</td>
+                        <td>{{ sale.Customer_Name }}</td>
+                        <td>{{ sale.Branch_Name }}</td>
+                        <td>${{ "%.2f"|format(sale.Total_Price) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-data">No recent sales</p>
+        {% endif %}
+    </div>
+    
+    <!-- Low Stock Alert -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Low Stock Alert</h2>
+            <a href="{{ url_for('inventory') }}" class="btn btn-sm btn-primary">View Inventory</a>
+        </div>
+        
+        {% if low_stock %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Branch</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in low_stock %}
+                    <tr class="{% if item.Quantity < 20 %}critical{% elif item.Quantity < 50 %}warning{% endif %}">
+                        <td>{{ item.Branch_Name }}</td>
+                        <td>{{ item.Product_Name }}</td>
+                        <td>
+                            <span class="badge {% if item.Quantity < 20 %}badge-danger{% else %}badge-warning{% endif %}">
+                                {{ item.Quantity }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-data">All products are well stocked</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card">
+    <div class="card-header">
+        <h2>Quick Actions</h2>
+    </div>
+    <div class="quick-actions">
+        <a href="{{ url_for('add_branch') }}" class="action-btn">
+            <span class="action-icon">➕</span>
+            <span>Add Branch</span>
+        </a>
+        <a href="{{ url_for('add_customer') }}" class="action-btn">
+            <span class="action-icon">👤</span>
+            <span>Add Customer</span>
+        </a>
+        <a href="{{ url_for('products') }}" class="action-btn">
+            <span class="action-icon">📦</span>
+            <span>View Products</span>
+        </a>
+        <a href="{{ url_for('reports') }}" class="action-btn">
+            <span class="action-icon">📊</span>
+            <span>View Reports</span>
+        </a>
+        <a href="{{ url_for('all_queries') }}" class="action-btn">
+            <span class="action-icon">🔍</span>
+            <span>Run Queries</span>
+        </a>
+    </div>
+</div>
+
+<style>
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-header p {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.stat-card.highlight {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.stat-content p {
+    margin: 0;
+    opacity: 0.8;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.no-data {
+    text-align: center;
+    padding: 2rem;
+    color: #7f8c8d;
+}
+
+.critical {
+    background-color: #fee;
+}
+
+.warning {
+    background-color: #fff3cd;
+}
+
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: bold;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #495057;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.action-btn:hover {
+    background: #e9ecef;
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    font-size: 2rem;
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

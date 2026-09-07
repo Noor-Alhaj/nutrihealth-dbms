@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent Hires - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>🏥 Nutri Health System</h2></div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span class="user-name">{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>👥 Query 6: Recent Hires (Last Year)</h2>
+                    <p style="color: #666; margin-top: 0.5rem;">Employees hired during the last year</p>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <h3 style="margin: 0;">Total Employees Hired: {{ count }}</h3>
+                </div>
+
+                {% if employees %}
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Branch</th>
+                                <th>Hire Date</th>
+                                <th>Days Since Hire</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for emp in employees %}
+                            <tr>
+                                <td><strong>{{ emp.Employee_ID }}</strong></td>
+                                <td>{{ emp.Employee_Name }}</td>
+                                <td><span class="badge badge-success">{{ emp.Position }}</span></td>
+                                <td>{{ emp.Branch_Name }}</td>
+                                <td>{{ emp.Hire_Date }}</td>
+                                <td>{{ emp.Days_Since_Hire }} days</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">ℹ️ No employees hired in the last year.</div>
+                {% endif %}
+
+                <div class="card" style="background: #f8f9fa; margin-top: 1.5rem;">
+                    <h3 style="color: #333; margin-bottom: 1rem;">📝 SQL Query</h3>
+                    <pre style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 5px;"><code>SELECT e.Employee_ID, e.Employee_Name, e.Position, 
+       e.Hire_Date, b.Branch_Name,
+       DATEDIFF(CURDATE(), e.Hire_Date) AS Days_Since_Hire
+FROM Employees e
+JOIN Branches b ON e.Branch_ID = b.Branch_ID
+WHERE e.Hire_Date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+ORDER BY e.Hire_Date DESC;</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer"><p>&copy; 2026 Nutri Health Center. All rights reserved.</p></footer>
+</body>
+</html>

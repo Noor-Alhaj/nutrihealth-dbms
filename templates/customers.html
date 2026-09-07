@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Customers - Nutri Health{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>👥 All Customers</h2>
+        <a href="{{ url_for('add_customer') }}" class="btn btn-success">
+            + Add New Customer
+        </a>
+    </div>
+    
+
+    <div style="display: flex; gap: 1rem; margin: 1.5rem; flex-wrap: wrap;">
+        <a href="{{ url_for('customer_consultations') }}" class="btn btn-primary btn-sm">
+            📋 Customer Visits
+        </a>
+        <a href="{{ url_for('customer_categories') }}" class="btn btn-success btn-sm">
+            🛍️ Purchase Preferences
+        </a>
+        <a href="{{ url_for('inactive_customers_report') }}" class="btn btn-warning btn-sm">
+            ⏰ Inactive Customers
+        </a>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Join Date</th>
+                    <th>Purchases</th>
+                    <th>Total Spent</th>
+                    <th>Last Purchase</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.Customer_ID }}</td>
+                    <td><strong>{{ customer.Customer_FirstName }} {{ customer.Customer_LastName }}</strong></td>
+                    <td>{{ customer.Phone }}</td>
+                    <td>{{ customer.Address or 'N/A' }}</td>
+                    <td>{{ customer.Join_Date }}</td>
+                    <td>{{ customer.Total_Purchases }}</td>
+                    <td>₪{{ "%.2f"|format(customer.Total_Spent) }}</td>
+                    <td>{{ customer.Last_Purchase or 'No purchases' }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_customer', customer_id=customer.Customer_ID) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form method="POST" action="{{ url_for('delete_customer', customer_id=customer.Customer_ID) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this customer?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

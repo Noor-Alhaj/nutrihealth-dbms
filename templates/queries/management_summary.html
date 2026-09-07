@@ -1,0 +1,68 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Management Summary - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>🏥 Nutri Health System</h2></div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span>{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📊 Query 22: Comprehensive Management Summary</h2>
+                    <p style="color: #666;">Complete summary of sales, purchases, and profit per branch</p>
+                </div>
+                <div class="table-container">
+                    <table style="font-size:0.9rem;">
+                        <thead>
+                            <tr>
+                                <th>Branch</th>
+                                <th>Sales Trans.</th>
+                                <th>Sales Revenue</th>
+                                <th>Purchase Trans.</th>
+                                <th>Purchase Cost</th>
+                                <th>Gross Profit</th>
+                                <th>Salaries</th>
+                                <th>Net Profit</th>
+                                <th>Margin %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in results %}
+                            <tr>
+                                <td><strong>{{ r.Branch_Name }}</strong><br><small>{{ r.City }}</small></td>
+                                <td>{{ r.Total_Sales_Transactions }}</td>
+                                <td style="color:#28a745;">₪{{ "{:,.0f}".format(r.Total_Sales_Revenue) }}</td>
+                                <td>{{ r.Total_Purchase_Transactions }}</td>
+                                <td style="color:#dc3545;">₪{{ "{:,.0f}".format(r.Total_Purchase_Cost) }}</td>
+                                <td>₪{{ "{:,.0f}".format(r.Gross_Profit) }}</td>
+                                <td style="color:#dc3545;">₪{{ "{:,.0f}".format(r.Total_Salaries) }}</td>
+                                <td><strong style="color:{{ '#28a745' if r.Net_Profit >= 0 else '#dc3545' }};">₪{{ "{:,.0f}".format(r.Net_Profit) }}</strong></td>
+                                <td><strong>{{ r.Profit_Margin_Percentage }}%</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer"><p>&copy; 2026 Nutri Health Center</p></footer>
+</body>
+</html>

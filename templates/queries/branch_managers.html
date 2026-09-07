@@ -1,0 +1,79 @@
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Managers - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>🏥 Nutri Health System</h2></div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span class="user-name">{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>👔 Query 3: Branch Managers</h2>
+                    <p>Retrieve manager name for each branch, sorted by branch number</p>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Branch ID</th>
+                                <th>Branch Name</th>
+                                <th>City</th>
+                                <th>Manager Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for branch in branches %}
+                            <tr>
+                                <td><strong>{{ branch.Branch_ID }}</strong></td>
+                                <td>{{ branch.Branch_Name }}</td>
+                                <td><span class="badge badge-success">{{ branch.City }}</span></td>
+                                <td>
+                                    {% if branch.Manager_Name %}
+                                        {{ branch.Manager_Name }}
+                                    {% else %}
+                                        <span style="color: #999;">No Manager Assigned</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card" style="background: #f8f9fa; margin-top: 1.5rem;">
+                    <h3 style="color: #333; margin-bottom: 1rem;">🔍 SQL Query</h3>
+                    <pre><code>SELECT b.Branch_ID, b.Branch_Name, b.City,
+       e.Employee_Name AS Manager_Name
+FROM Branches b
+LEFT JOIN Employees e ON b.Manager_ID = e.Employee_ID
+ORDER BY b.Branch_ID;</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Nutri Health Center. All rights reserved.</p>
+    </footer>
+</body>
+</html>

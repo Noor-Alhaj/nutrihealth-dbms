@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Employee - Nutri Health{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 700px; margin: 0 auto;">
+    <div class="card-header">
+        <h2>Edit Employee #{{ employee.Employee_ID }}</h2>
+    </div>
+    
+    <form method="POST" action="{{ url_for('edit_employee', employee_id=employee.Employee_ID) }}">
+        <div class="form-group">
+            <label for="employee_name">Employee Name *</label>
+            <input type="text" id="employee_name" name="employee_name" 
+                   class="form-control" value="{{ employee.Employee_Name }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="position">Position *</label>
+            <select id="position" name="position" class="form-control" required>
+                <option value="">-- Select Position --</option>
+                <option value="Branch_Manager" {% if employee.Position == 'Branch_Manager' %}selected{% endif %}>Branch Manager</option>
+                <option value="Nutrition_Specialist" {% if employee.Position == 'Nutrition_Specialist' %}selected{% endif %}>Nutrition Specialist</option>
+                <option value="Cashier" {% if employee.Position == 'Cashier' %}selected{% endif %}>Cashier</option>
+                <option value="Warehouse_Keeper" {% if employee.Position == 'Warehouse_Keeper' %}selected{% endif %}>Warehouse Keeper</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="branch_id">Branch *</label>
+            <select id="branch_id" name="branch_id" class="form-control" required>
+                <option value="">-- Select Branch --</option>
+                {% for branch in branches %}
+                <option value="{{ branch.Branch_ID }}" 
+                        {% if employee.Branch_ID == branch.Branch_ID %}selected{% endif %}>
+                    {{ branch.Branch_Name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="salary">Salary *</label>
+            <input type="number" id="salary" name="salary" step="0.01" 
+                   class="form-control" value="{{ employee.Salary }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="phone">Phone *</label>
+            <input type="text" id="phone" name="phone" 
+                   class="form-control" value="{{ employee.Phone }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="address">Address</label>
+            <textarea id="address" name="address" class="form-control" 
+                      rows="3">{{ employee.Address }}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>Hire Date</label>
+            <input type="text" class="form-control" 
+                   value="{{ employee.Hire_Date }}" readonly disabled>
+        </div>
+        
+        <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-success">
+                Update Employee
+            </button>
+            <a href="{{ url_for('employees') }}" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

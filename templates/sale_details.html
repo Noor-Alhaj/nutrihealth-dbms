@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Sale #{{ sale.Sale_ID }} - Nutri Health{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>🧾 Sale Details - #{{ sale.Sale_ID }}</h2>
+        <a href="{{ url_for('sales') }}" class="btn btn-secondary">Back to Sales</a>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+        <div>
+            <h3 style="color: #667eea; margin-bottom: 1rem;">Sale Information</h3>
+            <table style="width: 100%;">
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">Sale ID:</td>
+                    <td style="padding: 0.5rem;">{{ sale.Sale_ID }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">Date:</td>
+                    <td style="padding: 0.5rem;">{{ sale.Sale_Date }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">Branch:</td>
+                    <td style="padding: 0.5rem;">{{ sale.Branch_Name }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">Employee:</td>
+                    <td style="padding: 0.5rem;">{{ sale.Employee_Name }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div>
+            <h3 style="color: #667eea; margin-bottom: 1rem;">Customer Information</h3>
+            <table style="width: 100%;">
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">Name:</td>
+                    <td style="padding: 0.5rem;">{{ sale.Customer_Name }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">Phone:</td>
+                    <td style="padding: 0.5rem;">{{ sale.Customer_Phone }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>🛒 Items Purchased</h2>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td><strong>{{ item.Product_Name }}</strong></td>
+                    <td>
+                        <span class="badge badge-success">{{ item.Category }}</span>
+                    </td>
+                    <td>{{ item.Quantity }}</td>
+                    <td>₪{{ "%.2f"|format(item.Unit_Price) }}</td>
+                    <td>₪{{ "%.2f"|format(item.Subtotal) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot style="background: #f8f9fa;">
+                <tr>
+                    <td colspan="4" style="text-align: right; padding: 1rem; font-weight: bold; font-size: 1.2rem;">
+                        TOTAL:
+                    </td>
+                    <td style="padding: 1rem; font-weight: bold; font-size: 1.2rem; color: #667eea;">
+                        ₪{{ "%.2f"|format(sale.Total_Price) }}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}

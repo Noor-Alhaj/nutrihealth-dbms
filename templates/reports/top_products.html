@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Top Products Report - Nutri Health{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>📊 Top Selling Products Report</h2>
+        <a href="{{ url_for('reports') }}" class="btn btn-secondary">Back to Reports</a>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Total Quantity Sold</th>
+                    <th>Total Revenue</th>
+                    <th>Number of Sales</th>
+                    <th>Avg per Sale</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>
+                        {% if loop.index <= 3 %}
+                            <span style="font-size: 1.5rem;">
+                                {% if loop.index == 1 %}🥇
+                                {% elif loop.index == 2 %}🥈
+                                {% else %}🥉{% endif %}
+                            </span>
+                        {% else %}
+                            {{ loop.index }}
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ product.Product_Name }}</strong></td>
+                    <td>
+                        <span class="badge badge-success">{{ product.Category }}</span>
+                    </td>
+                    <td>{{ product.Total_Sold }}</td>
+                    <td>₪{{ "%.2f"|format(product.Total_Revenue) }}</td>
+                    <td>{{ product.Number_Of_Sales }}</td>
+                    <td>{{ "%.1f"|format(product.Total_Sold / product.Number_Of_Sales) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="margin-top: 2rem; padding: 1.5rem; background: #f1f1f1; border-radius: 8px;">
+        <h3 style="color: #45527b; margin-bottom: 1rem;">Report Summary</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div>
+                <strong>Total Products Analyzed:</strong> {{ products|length }}
+            </div>
+            <div>
+                <strong>Total Units Sold:</strong> 
+                {{ products|sum(attribute='Total_Sold') }}
+            </div>
+            <div>
+                <strong>Total Revenue:</strong> 
+                ₪{{ "%.2f"|format(products|sum(attribute='Total_Revenue')) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

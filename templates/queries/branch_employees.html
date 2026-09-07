@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Count - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>🏥 Nutri Health System</h2></div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span class="user-name">{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📊 Query 4: Employee Count per Branch</h2>
+                    <p>Total number of employees working in each branch</p>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Branch ID</th>
+                                <th>Branch Name</th>
+                                <th>City</th>
+                                <th>Total Employees</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr>
+                                <td><strong>{{ result.Branch_ID }}</strong></td>
+                                <td>{{ result.Branch_Name }}</td>
+                                <td><span class="badge badge-success">{{ result.City }}</span></td>
+                                <td><strong style="color: #667eea; font-size: 1.2rem;">{{ result.Total_Employees }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card" style="background: #f8f9fa; margin-top: 1.5rem;">
+                    <h3 style="color: #333; margin-bottom: 1rem;">🔍 SQL Query</h3>
+                    <pre><code>SELECT b.Branch_ID, b.Branch_Name, b.City,
+       COUNT(e.Employee_ID) AS Total_Employees
+FROM Branches b
+LEFT JOIN Employees e ON b.Branch_ID = e.Branch_ID
+GROUP BY b.Branch_ID, b.Branch_Name, b.City
+ORDER BY Total_Employees DESC;</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Nutri Health Center. All rights reserved.</p>
+    </footer>
+</body>
+</html>

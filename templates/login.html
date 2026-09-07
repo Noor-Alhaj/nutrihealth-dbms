@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Nutri Health System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-lg">
+            <div class="card-header bg-success text-white text-center py-4">
+                <h3>
+                    <i class="bi bi-heart-pulse"></i> Nutri Health
+                </h3>
+                <p class="mb-0">Login to Your Account</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('login') }}">
+                    <!-- Username Field -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="bi bi-person-circle"></i> Username
+                        </label>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="username" 
+                               name="username" 
+                               placeholder="Enter your username"
+                               required 
+                               autofocus>
+                        <small class="form-text text-muted">
+                            Example: ahmad_m, fatima_a, mohammed_k
+                        </small>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            <i class="bi bi-lock-fill"></i> Password
+                        </label>
+                        <input type="password" 
+                               class="form-control form-control-lg" 
+                               id="password" 
+                               name="password" 
+                               placeholder="Enter your password"
+                               required>
+                    </div>
+
+                    <!-- Login Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Demo Credentials Section -->
+                <div class="mt-4 p-3 bg-light border rounded">
+                    <h6 class="text-muted mb-2">
+                        <i class="bi bi-info-circle"></i> Examples of users: 
+                    </h6>
+                    <small class="d-block mb-1">
+                        <strong>Branch Manager:</strong> ahmad_m / password123
+                    </small>
+                    <small class="d-block mb-1">
+                        <strong>Nutrition Specialist:</strong> fatima_a / password123
+                    </small>
+                    <small class="d-block mb-1">
+                        <strong>Cashier:</strong> mohammed_k / password123
+                    </small>
+                    <small class="d-block">
+                        <strong>Warehouse Keeper:</strong> sara_a / password123
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="text-center mt-3">
+            <p class="text-muted">
+                <i class="bi bi-shield-check"></i> Secure Login System
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+    
+    .form-control:focus {
+        border-color: #f1f1f1;
+        box-shadow: 0 0 0 0.2rem rgba(223, 165, 244, 0.555);
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #f1f1f1 0%, #45527b 100%);
+        border: none;
+        transition: transform 0.2s;
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(223, 165, 244, 0.555);
+    }
+</style>
+{% endblock %}

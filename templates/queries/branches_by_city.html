@@ -1,0 +1,118 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branches by City - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h2>🏥 Nutri Health System</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span class="user-name">{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📍 Query 1: Branches by City</h2>
+                    <p style="color: #666; margin-top: 0.5rem;">Retrieve details of all branches located in a specific city</p>
+                </div>
+
+                <!-- Filter Form -->
+                <div class="filter-form">
+                    <form method="GET" action="{{ url_for('branches_by_city') }}">
+                        <div class="form-row">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="city">Select City:</label>
+                                <select name="city" id="city" class="form-control" required>
+                                    <option value="">-- Choose a City --</option>
+                                    {% for c in cities %}
+                                    <option value="{{ c.City }}" {% if selected_city == c.City %}selected{% endif %}>
+                                        {{ c.City }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary">🔍 Execute Query</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results -->
+                {% if selected_city %}
+                    {% if branches %}
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <h3 style="margin: 0;">City: {{ selected_city }}</h3>
+                        <p style="margin: 0.5rem 0 0 0;">Found {{ branches|length }} branch(es)</p>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Branch ID</th>
+                                    <th>Branch Name</th>
+                                    <th>City</th>
+                                    <th>Address</th>
+                                    <th>Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for branch in branches %}
+                                <tr>
+                                    <td><strong>{{ branch.Branch_ID }}</strong></td>
+                                    <td>{{ branch.Branch_Name }}</td>
+                                    <td><span class="badge badge-success">{{ branch.City }}</span></td>
+                                    <td>{{ branch.Address }}</td>
+                                    <td>{{ branch.Phone }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        ℹ️ No branches found in {{ selected_city }}.
+                    </div>
+                    {% endif %}
+                {% else %}
+                <div class="alert alert-info">
+                    ⬆️ Please select a city to view branches.
+                </div>
+                {% endif %}
+
+                <!-- SQL Query -->
+                <div class="card" style="background: #f8f9fa; margin-top: 1.5rem;">
+                    <h3 style="color: #333; margin-bottom: 1rem;">📝 SQL Query</h3>
+                    <pre style="background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 5px; overflow-x: auto;"><code>SELECT Branch_ID, Branch_Name, City, Address, Phone
+FROM Branches
+WHERE City = ?
+ORDER BY Branch_Name;</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Nutri Health Center. All rights reserved.</p>
+    </footer>
+</body>
+</html>

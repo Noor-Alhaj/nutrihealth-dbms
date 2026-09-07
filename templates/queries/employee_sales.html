@@ -1,0 +1,93 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Sales - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>🏥 Nutri Health System</h2></div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span>{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>👤 Query 13: Employee Sales Performance</h2>
+                    <p style="color: #666;">Sales handled by specific employee in date range</p>
+                </div>
+                <div class="filter-form">
+                    <form method="GET">
+                        <div class="form-row">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Select Employee:</label>
+                                <select name="employee_id" class="form-control" required>
+                                    <option value="">-- Choose Employee --</option>
+                                    {% for e in employees %}
+                                    <option value="{{ e.Employee_ID }}" {% if selected_employee == e.Employee_ID %}selected{% endif %}>{{ e.Employee_Name }} ({{ e.Branch_Name }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Start Date:</label>
+                                <input type="date" name="start_date" class="form-control" value="{{ start_date }}" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>End Date:</label>
+                                <input type="date" name="end_date" class="form-control" value="{{ end_date }}" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary">🔍 Execute</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {% if employee_info %}
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <h3 style="margin:0 0 0.5rem 0;">{{ employee_info.Employee_Name }}</h3>
+                    <p style="margin:0;">{{ employee_info.Position }} - {{ employee_info.Branch_Name }}</p>
+                    <p style="margin:0.5rem 0 0 0;"><strong>Total Sales: {{ sales|length }} | Total Amount: ₪{{ "{:,.2f}".format(total_amount) }}</strong></p>
+                </div>
+                {% if sales %}
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Sale ID</th><th>Date</th><th>Customer</th><th>Amount</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for s in sales %}
+                            <tr>
+                                <td><strong>#{{ s.Sale_ID }}</strong></td>
+                                <td>{{ s.Sale_Date }}</td>
+                                <td>{{ s.Customer_Name }}</td>
+                                <td><strong style="color:#28a745;">₪{{ "{:,.2f}".format(s.Total_Price) }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">ℹ️ No sales for this employee in selected period.</div>
+                {% endif %}
+                {% else %}
+                <div class="alert alert-info">⬆️ Please select employee and date range.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <footer class="footer"><p>&copy; 2026 Nutri Health Center</p></footer>
+</body>
+</html>

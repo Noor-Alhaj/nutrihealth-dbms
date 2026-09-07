@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Inactive Customers Report - Nutri Health{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>⚠️ Inactive Customers Report</h2>
+        <a href="{{ url_for('reports') }}" class="btn btn-secondary">Back to Reports</a>
+    </div>
+    
+    <p style="padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 1.5rem;">
+        <strong>Definition:</strong> Customers who have not made any purchases in the last 6 months.
+        These customers may benefit from re-engagement campaigns.
+    </p>
+    
+    {% if customers %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Customer Name</th>
+                    <th>Phone</th>
+                    <th>Join Date</th>
+                    <th>Last Purchase</th>
+                    <th>Days Inactive</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.Customer_ID }}</td>
+                    <td><strong>{{ customer.Customer_Name }}</strong></td>
+                    <td>{{ customer.Phone }}</td>
+                    <td>{{ customer.Join_Date }}</td>
+                    <td>{{ customer.Last_Purchase or 'Never purchased' }}</td>
+                    <td>
+                        {% if customer.Days_Inactive %}
+                            <span class="badge 
+                                {% if customer.Days_Inactive > 365 %}badge-danger
+                                {% elif customer.Days_Inactive > 180 %}badge-warning
+                                {% else %}badge-info{% endif %}">
+                                {{ customer.Days_Inactive }} days
+                            </span>
+                        {% else %}
+                            <span class="badge badge-danger">No purchases</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not customer.Last_Purchase %}
+                            <span class="badge badge-danger">Never Active</span>
+                        {% elif customer.Days_Inactive > 365 %}
+                            <span class="badge badge-danger">Critical</span>
+                        {% elif customer.Days_Inactive > 180 %}
+                            <span class="badge badge-warning">At Risk</span>
+                        {% else %}
+                            <span class="badge badge-info">Inactive</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="margin-top: 2rem; padding: 1.5rem; background: #f1f1f1; border-radius: 8px;">
+        <h3 style="color: #45527b; margin-bottom: 1rem;">Recommendations</h3>
+        <ul style="list-style-position: inside; line-height: 2;">
+            <li>Total inactive customers: <strong>{{ customers|length }}</strong></li>
+            <li>Consider sending re-engagement emails or special offers</li>
+            <li>Review customer preferences and purchase history</li>
+            <li>Schedule follow-up calls for high-value customers</li>
+            <li>Implement loyalty programs to retain customers</li>
+        </ul>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem; background: #598eb4; border-radius: 8px;">
+        <h3 style="color: #4a0707df;">✅ No Inactive Customers Found</h3>
+        <p style="color: #4a0707df; margin-top: 1rem;">
+            All customers have made purchases within the last 6 months. Great job!
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

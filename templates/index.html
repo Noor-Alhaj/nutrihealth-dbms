@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>🏥 Nutri Health Management System</h1>
+    <p>Complete Database Solution for Health & Nutrition Centers</p>
+    <a href="{{ url_for('login') }}" class="btn btn-primary">Login to System</a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Multi-Branch Support</h3>
+        <p>Manage multiple locations across Palestine with centralized control</p>
+    </div>
+    <div class="stat-card">
+        <h3>Inventory Management</h3>
+        <p>Track health products, stock levels, and suppliers efficiently</p>
+    </div>
+    <div class="stat-card">
+        <h3>Sales & Analytics</h3>
+        <p>Complete sales tracking with detailed reports and insights</p>
+    </div>
+    <div class="stat-card">
+        <h3>Customer Management</h3>
+        <p>Maintain customer records and purchase histories</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>System Features</h2>
+    </div>
+    <ul style="list-style-position: inside; line-height: 2;">
+        <li>Branch and employee management</li>
+        <li>Product catalog with pricing and margins</li>
+        <li>Real-time inventory tracking</li>
+        <li>Sales processing and history</li>
+        <li>Purchase order management</li>
+        <li>Customer database with purchase analytics</li>
+        <li>Comprehensive reporting and analytics</li>
+        <li>Low stock alerts</li>
+        <li>User authentication and role-based access</li>
+    </ul>
+</div>
+{% endblock %}

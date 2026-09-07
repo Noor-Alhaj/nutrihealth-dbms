@@ -1,0 +1,61 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Low Stock - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>🏥 Nutri Health System</h2></div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span>{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>⚠️ Query 9: Low Stock Alert</h2>
+                    <p style="color: #666;">Products below minimum stock level (50 units)</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <h3 style="margin:0;">⚠️ Alert: {{ products|length }} products below minimum stock</h3>
+                </div>
+                {% if products %}
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Branch</th><th>Product Name</th><th>Category</th><th>Supplier</th><th>Quantity</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for p in products %}
+                            <tr {% if p.Quantity < 20 %}style="background:#ffe6e6;"{% endif %}>
+                                <td>{{ p.Branch_Name }}</td>
+                                <td><strong>{{ p.Product_Name }}</strong></td>
+                                <td><span class="badge badge-warning">{{ p.Category }}</span></td>
+                                <td>{{ p.Supplier_Name }}</td>
+                                <td><strong style="color:#dc3545;">{{ p.Quantity }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-success">✅ All products are adequately stocked!</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <footer class="footer"><p>&copy; 2026 Nutri Health Center</p></footer>
+</body>
+</html>

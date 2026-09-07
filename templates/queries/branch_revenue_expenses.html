@@ -1,0 +1,55 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Branch Revenue & Expenses - Nutri Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><h2>🏥 Nutri Health System</h2></div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('all_queries') }}">All Queries</a></li>
+            </ul>
+            <div class="nav-user">
+                <span>{{ session.employee_name }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>💰 Query 21: Branch Revenue & Expenses</h2>
+                    <p style="color: #666;">Total revenue and expenses for each branch</p>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Branch</th><th>City</th><th>Revenue</th><th>Product Costs</th><th>Salaries</th><th>Net Profit</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for r in results %}
+                            <tr>
+                                <td><strong>{{ r.Branch_Name }}</strong></td>
+                                <td><span class="badge badge-success">{{ r.City }}</span></td>
+                                <td style="color:#28a745;">₪{{ "{:,.2f}".format(r.Total_Revenue) }}</td>
+                                <td style="color:#dc3545;">₪{{ "{:,.2f}".format(r.Total_Expenses) }}</td>
+                                <td style="color:#dc3545;">₪{{ "{:,.2f}".format(r.Salary_Expenses) }}</td>
+                                <td><strong style="color:{{ '#28a745' if r.Net_Profit >= 0 else '#dc3545' }};">₪{{ "{:,.2f}".format(r.Net_Profit) }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer"><p>&copy; 2026 Nutri Health Center</p></footer>
+</body>
+</html>

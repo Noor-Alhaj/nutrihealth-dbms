@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - Nutri Health{% endblock %}
+
+{% block content %}
+<div class="card-header">
+    <h2>📈 Reports & Analytics</h2>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">Top Products Report</h3>
+        <p style="color: #666; margin-bottom: 1.5rem;">
+            View best-selling products across all branches with sales statistics
+        </p>
+        <a href="{{ url_for('top_products_report') }}" class="btn btn-primary">
+            View Report
+        </a>
+    </div>
+
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">Branch Performance</h3>
+        <p style="color: #666; margin-bottom: 1.5rem;">
+            Compare branch revenues, expenses, and profitability
+        </p>
+        <a href="{{ url_for('branch_performance_report') }}" class="btn btn-primary">
+            View Report
+        </a>
+    </div>
+
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">Inactive Customers</h3>
+        <p style="color: #666; margin-bottom: 1.5rem;">
+            Identify customers who haven't purchased in the last 6 months
+        </p>
+        <a href="{{ url_for('inactive_customers_report') }}" class="btn btn-primary">
+            View Report
+        </a>
+    </div>
+
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">Inventory Status</h3>
+        <p style="color: #666; margin-bottom: 1.5rem;">
+            Check current inventory levels and low stock alerts
+        </p>
+        <a href="{{ url_for('inventory') }}" class="btn btn-primary">
+            View Inventory
+        </a>
+    </div>
+
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">Sales Analysis</h3>
+        <p style="color: #666; margin-bottom: 1.5rem;">
+            Detailed sales transactions with filtering options
+        </p>
+        <a href="{{ url_for('sales') }}" class="btn btn-primary">
+            View Sales
+        </a>
+    </div>
+
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">Product Catalog</h3>
+        <p style="color: #666; margin-bottom: 1.5rem;">
+            Complete product listing with pricing and profit margins
+        </p>
+        <a href="{{ url_for('products') }}" class="btn btn-primary">
+            View Products
+        </a>
+    </div>
+</div>
+{% endblock %}

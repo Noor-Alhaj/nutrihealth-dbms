@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Nutri Health System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        :root {
+            --color-light: #f1f1f1;
+            --color-dark-blue: #45527b;
+            --color-dark-red: #4a0707df;
+            --color-sky-blue: #598eb4;
+            
+            --primary-gradient: linear-gradient(135deg, var(--color-dark-blue) 0%, var(--color-sky-blue) 100%);
+            --secondary-gradient: linear-gradient(135deg, var(--color-dark-red) 0%, #6a0808 100%);
+            --success-gradient: linear-gradient(135deg, var(--color-sky-blue) 0%, #4a7d9f 100%);
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--color-light) 0%, #e8e8e8 100%);
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+        
+        /* Beautiful Navbar */
+        .navbar {
+            background: var(--primary-gradient) !important;
+            box-shadow: 0 10px 30px rgba(69, 82, 123, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar-brand {
+            font-weight: 700 !important;
+            color: white !important;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 0 0.25rem;
+        }
+        
+        .nav-link:hover {
+            background: rgba(89, 142, 180, 0.3);
+            transform: translateY(-2px);
+            color: white !important;
+        }
+        
+        .nav-link.active {
+            background: rgba(89, 142, 180, 0.4) !important;
+            color: white !important;
+        }
+        
+        .user-badge {
+            background: rgba(89, 142, 180, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .role-badge {
+            background: var(--color-sky-blue);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            color: white;
+        }
+        
+        /* Dropdown Menu */
+        .dropdown-menu {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(69, 82, 123, 0.2);
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dropdown-item {
+            padding: 0.75rem 1.25rem;
+            transition: all 0.2s ease;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        /* Alerts */
+        .alert {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: slideInDown 0.4s ease;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d1f4e0 0%, #a8e6c5 100%);
+            color: #0d4d2b;
+            border-left: 4px solid var(--color-sky-blue);
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #ffd6d6 0%, #ffb3b3 100%);
+            color: var(--color-dark-red);
+            border-left: 4px solid var(--color-dark-red);
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #d9eef7 0%, #b3ddf2 100%);
+            color: #004085;
+            border-left: 4px solid var(--color-sky-blue);
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Cards */
+        .card {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(69, 82, 123, 0.1);
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(69, 82, 123, 0.15);
+        }
+        
+        .card-header {
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 16px 16px 0 0 !important;
+            padding: 1.5rem;
+            border: none;
+        }
+        
+        .card-header h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        /* Tables */
+        .table {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .table thead {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .table thead th {
+            border: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            padding: 1rem;
+        }
+        
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(69, 82, 123, 0.05) 0%, rgba(89, 142, 180, 0.05) 100%);
+            transform: scale(1.01);
+        }
+        
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        
+        /* Buttons */
+        .btn {
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 0.625rem 1.25rem;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success-gradient);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--secondary-gradient);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            color: #000;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, var(--color-sky-blue) 0%, #4a7d9f 100%);
+            color: white;
+        }
+        
+        .btn-outline-light:hover {
+            background: white;
+            color: var(--color-dark-blue);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(69, 82, 123, 0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--color-dark-blue);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(69, 82, 123, 0.2);
+        }
+        
+        .stat-card h3 {
+            color: var(--color-dark-blue);
+            font-weight: 700;
+        }
+        
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--color-dark-blue) 0%, #2d3650 100%);
+            color: white;
+            box-shadow: 0 -10px 30px rgba(69, 82, 123, 0.2);
+        }
+        
+        /* Form Controls */
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color-sky-blue);
+            box-shadow: 0 0 0 4px rgba(89, 142, 180, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Badge Animations */
+        .badge {
+            border-radius: 20px;
+            padding: 0.4rem 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge-primary {
+            background: var(--color-dark-blue);
+        }
+        
+        .badge-success {
+            background: var(--color-sky-blue);
+        }
+        
+        .badge-danger {
+            background: var(--color-dark-red);
+        }
+        
+        /* Main Container */
+        main {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: var(--primary-gradient);
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(69, 82, 123, 0.3);
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+        
+        /* Filter Form */
+        .filter-form {
+            background: linear-gradient(135deg, rgba(241, 241, 241, 0.8) 0%, rgba(232, 232, 232, 0.8) 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 2px solid rgba(69, 82, 123, 0.1);
+        }
+        
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--color-light);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-dark-blue);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('dashboard') if session.user_id else url_for('index') }}">
+                <i class="bi bi-heart-pulse"></i> Nutri Health
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                {% if session.user_id %}
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    
+                    {% if has_permission('branches') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('branches') }}">
+                            <i class="bi bi-building"></i> Branches
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% if has_permission('employees') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('employees') }}">
+                            <i class="bi bi-people"></i> Employees
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% if session.role != 'Warehouse_Keeper' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('customers') }}">
+                            <i class="bi bi-person-circle"></i> Customers
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('products') }}">
+                            <i class="bi bi-box-seam"></i> Products
+                        </a>
+                    </li>
+                    
+                    {% if session.role != 'Nutrition_Specialist' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('inventory') }}">
+                            <i class="bi bi-boxes"></i> Inventory
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% if has_permission('sales') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('sales') }}">
+                            <i class="bi bi-cart-check"></i> Sales
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% if has_permission('reports') %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button" 
+                           data-bs-toggle="dropdown">
+                            <i class="bi bi-graph-up"></i> Reports
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('all_queries') }}">
+                                <i class="bi bi-list-check"></i> All Queries
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('top_products_report') }}">
+                                <i class="bi bi-trophy"></i> Top Products
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('branch_performance_report') }}">
+                                <i class="bi bi-bar-chart"></i> Branch Performance
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('inactive_customers_report') }}">
+                                <i class="bi bi-person-x"></i> Inactive Customers
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <div class="d-flex align-items-center">
+                    <span class="user-badge">
+                        <i class="bi bi-person-badge"></i> {{ session.employee_name }}
+                        <span class="role-badge">{{ session.role.replace('_', ' ') }}</span>
+                    </span>
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm ms-3">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                </div>
+                {% else %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </a>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {% if category == 'success' %}
+                        <i class="bi bi-check-circle-fill fs-5 me-2"></i>
+                    {% elif category == 'danger' %}
+                        <i class="bi bi-exclamation-triangle-fill fs-5 me-2"></i>
+                    {% elif category == 'warning' %}
+                        <i class="bi bi-exclamation-circle-fill fs-5 me-2"></i>
+                    {% else %}
+                        <i class="bi bi-info-circle-fill fs-5 me-2"></i>
+                    {% endif %}
+                    <strong>{{ message }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center text-white py-4 mt-5">
+        <div class="container">
+            <p class="mb-2 fs-5">
+                <i class="bi bi-heart-pulse"></i> 
+                <strong>Nutri Health Management System</strong> &copy; 2026
+            </p>
+            <p class="mb-1" style="opacity: 0.9;">
+                Database Systems Project - Phase 4
+            </p>
+            <p class="mb-0" style="opacity: 0.8; font-size: 0.9rem;">
+                Noor Alhaj (1221543) & Shahd Shwekeyeh (1222105)
+            </p>
+            {% if session.user_id %}
+            <small class="d-block mt-2" style="opacity: 0.7;">
+                Logged in as: <strong>{{ session.employee_name }}</strong> ({{ session.role.replace('_', ' ') }})
+            </small>
+            {% endif %}
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

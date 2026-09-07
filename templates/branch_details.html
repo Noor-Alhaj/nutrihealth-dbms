@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}{{ branch.Branch_Name }} - Nutri Health{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>🏢 {{ branch.Branch_Name }}</h2>
+        <a href="{{ url_for('branches') }}" class="btn btn-secondary">Back to Branches</a>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+        <div>
+            <h3 style="color: #667eea; margin-bottom: 1rem;">Branch Information</h3>
+            <table style="width: 100%;">
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">Branch ID:</td>
+                    <td style="padding: 0.5rem;">{{ branch.Branch_ID }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">City:</td>
+                    <td style="padding: 0.5rem;">{{ branch.City }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">Address:</td>
+                    <td style="padding: 0.5rem;">{{ branch.Address }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">Phone:</td>
+                    <td style="padding: 0.5rem;">{{ branch.Phone }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.5rem; font-weight: bold;">Manager:</td>
+                    <td style="padding: 0.5rem;">{{ branch.Manager_Name or 'Not assigned' }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div>
+            <h3 style="color: #667eea; margin-bottom: 1rem;">Performance Statistics</h3>
+            <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="stat-card">
+                    <h3>Employees</h3>
+                    <div class="value">{{ employees|length }}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Sales</h3>
+                    <div class="value">{{ stats.Total_Sales }}</div>
+                </div>
+                <div class="stat-card" style="grid-column: span 2;">
+                    <h3>Total Revenue</h3>
+                    <div class="value">₪{{ "%.2f"|format(stats.Total_Revenue) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>👨‍💼 Branch Employees</h2>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.Employee_ID }}</td>
+                    <td><strong>{{ employee.Employee_Name }}</strong></td>
+                    <td>
+                        <span class="badge badge-success">
+                            {{ employee.Position.replace('_', ' ') }}
+                        </span>
+                    </td>
+                    <td>₪{{ "%.2f"|format(employee.Salary) }}</td>
+                    <td>{{ employee.Phone }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

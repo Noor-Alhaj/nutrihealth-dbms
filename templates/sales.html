@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Sales - Nutri Health{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>💰 Sales Transactions</h2>
+    </div>
+    
+    <div class="filter-form">
+        <form method="GET" action="{{ url_for('sales') }}">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="start_date">Start Date</label>
+                    <input type="date" id="start_date" name="start_date" 
+                           class="form-control" value="{{ start_date or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="end_date">End Date</label>
+                    <input type="date" id="end_date" name="end_date" 
+                           class="form-control" value="{{ end_date or '' }}">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="{{ url_for('sales') }}" class="btn btn-secondary">Clear</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+        <a href="{{ url_for('sales_by_period') }}" class="btn btn-primary btn-sm">
+            📅 Sales by Period
+        </a>
+        <a href="{{ url_for('branch_sales') }}" class="btn btn-success btn-sm">
+            🏢 Sales by Branch
+        </a>
+        <a href="{{ url_for('employee_sales') }}" class="btn btn-warning btn-sm">
+            👤 Sales by Employee
+        </a>
+        <a href="{{ url_for('top_selling_products') }}" class="btn btn-info btn-sm">
+            🏆 Top Products
+        </a>
+        <a href="{{ url_for('purchases_sales_summary') }}" class="btn btn-info btn-sm">
+            💼 Purchases and Sales Per Branch 
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Sale ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Employee</th>
+                    <th>Branch</th>
+                    <th>Total Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.Sale_ID }}</td>
+                    <td>{{ sale.Sale_Date }}</td>
+                    <td>{{ sale.Customer_Name }}</td>
+                    <td>{{ sale.Employee_Name }}</td>
+                    <td>{{ sale.Branch_Name }}</td>
+                    <td><strong>₪{{ "%.2f"|format(sale.Total_Price) }}</strong></td>
+                    <td>
+                        <a href="{{ url_for('sale_details', sale_id=sale.Sale_ID) }}" 
+                           class="btn btn-primary btn-sm">
+                            View Details
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
