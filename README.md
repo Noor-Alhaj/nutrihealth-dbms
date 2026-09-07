@@ -4,8 +4,6 @@ A database course project: a normalized MySQL database for a chain of health &
 nutrition stores, wrapped in a Flask web application with role-based access
 control, full CRUD screens, 22 analytical SQL queries, and management reports.
 
-![ER Diagram](er-diagram.png)
-
 ---
 
 ## Overview
